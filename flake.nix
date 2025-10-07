@@ -19,7 +19,9 @@
       pkgs = nixpkgsFor.${system};
     in {
       default = pkgs.mkShell {
-        packages = [];
+        packages = [
+          pkgs.openmpi
+        ];
       };
     });
   };

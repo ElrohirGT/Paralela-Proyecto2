@@ -7,6 +7,7 @@ const int POSTFIX_LENGTH = 7;
 const int HOST_LENGTH = 7 + POSTFIX_LENGTH;
 const char *ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
 const int ALPHABET_LENGTH = 26 + 10;
+const int MAX_HOSTS_PER_PROCESS = 5;
 
 int int_math_mod(int n, int mod) {
   if (n < mod) {
@@ -80,10 +81,17 @@ void slave_world_routine(int rank) {
                          0,   0,   0,   0,   0,   0,   0};
 
   char *host_ref = (char *)&current_host;
+  int found_count = 0;
   for (uint_fast64_t i = start; i <= end; i++) {
     get_sequence(host_ref, i);
     // printf("Sequence: %s\n", host_ref);
-    is_alive_sim(host_ref, i);
+    if (is_alive_sim(host_ref, i)) {
+      found_count += 1;
+    }
+
+    if (found_count >= MAX_HOSTS_PER_PROCESS) {
+      return;
+    }
   }
 }
 
